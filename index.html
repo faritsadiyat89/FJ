@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MTs Fathul Jannah — PKKM Penilaian Kinerja Kepala Madrasah</title>
+<title>MTS FATHUL JANNAH — PKKM Penilaian Kinerja Kepala Madrasah</title>
 <style>
 :root{
   --bg:#f2f7f2; --card:#ffffff; --ink:#12291a; --muted:#5c7260;
@@ -103,13 +103,16 @@ footer{padding:26px 20px 60px;color:var(--muted)}
 <option value="4">4. Supervisi Guru & Tendik</option>
 <option value="5">5. Hasil / Prestasi & Kualifikasi</option>
 </select>
-<select id="filterStatus" style="min-width:160px">
+<select id="filterStatus" style="flex:1;min-width:150px">
 <option value="">Semua status</option>
 <option value="filled">Sudah ada link</option>
 <option value="empty">Belum ada link</option>
 </select>
-<button class="btn btn-primary" onclick="exportCSV()">⬇ CSV</button>
-<button class="btn btn-dark" onclick="exportJSON()">⬇ JSON</button>
+<select id="downloadSelect" onchange="handleDownload(this)" style="flex:1;min-width:155px">
+<option value="">⬇ Download</option>
+<option value="csv">⬇ CSV</option>
+<option value="json">⬇ JSON</option>
+</select>
 <button class="btn btn-gold" onclick="window.print()">🖨 Cetak</button>
 <button class="btn btn-ghost" onclick="resetAll()">Reset</button>
 <label class="btn btn-ghost" style="cursor:pointer">⬆ Import JSON<input type="file" id="importFile" accept=".json" hidden></label>
@@ -143,7 +146,7 @@ footer{padding:26px 20px 60px;color:var(--muted)}
 <li>Isi identitas madrasah di atas.</li>
 <li>Gunakan pencarian untuk menemukan indikator (mis. “RKJM”, “perpustakaan”, “supervisi”).</li>
 <li>Pada kolom <b>Bukti Dukung</b>, isi <b>Judul/nama dokumen</b> + <b>Link</b>, klik Simpan.</li>
-<li>Data tersimpan otomatis di browser ini. Untuk pindah laptop: klik <b>⬇ JSON</b> lalu di laptop lain klik <b>⬆ Import JSON</b>.</li>
+<li>Data tersimpan otomatis di browser ini. Untuk pindah laptop: pilih <b>⬇ Download → ⬇ JSON</b> lalu di laptop lain klik <b>⬆ Import JSON</b>.</li>
 <li>Klik <b>🖨 Cetak</b> untuk PDF rekap (gunakan orientasi Landscape).</li>
 </ol>
 </div>
@@ -443,6 +446,11 @@ function renderStats(){
   const pct=total?Math.round(filled/total*100):0;
   document.getElementById("st_pct").textContent=pct+"%";
   document.getElementById("st_bar").style.width=pct+"%";
+}
+function handleDownload(sel){
+  if(sel.value==="csv") exportCSV();
+  else if(sel.value==="json") exportJSON();
+  sel.value="";
 }
 function exportJSON(){
   const payload={identitas:getIdent(), bukti:store, exportedAt:new Date().toISOString()};
